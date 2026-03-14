@@ -1,8 +1,6 @@
 flask
-pandas
-numpy
-scikit-learn
-gunicorn
 flask-cors
 mysql-connector-python
-python-dotenv
+pandas
+werkzeug
+gunicorn
