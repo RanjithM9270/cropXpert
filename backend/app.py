@@ -3,6 +3,7 @@ from flask_cors import CORS
 import mysql.connector
 import pandas as pd
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -11,19 +12,24 @@ CORS(app)
 
 try:
     db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="kavyaskk@2005",
-        database="cropxpert"
+        host=os.getenv("MYSQLHOST"),
+        user=os.getenv("MYSQLUSER"),
+        password=os.getenv("MYSQLPASSWORD"),
+        database=os.getenv("MYSQLDATABASE"),
+        port=int(os.getenv("MYSQLPORT"))
     )
+
     cursor = db.cursor()
+
 except Exception as e:
     print("Database Connection Error:", e)
 
 
 # ================= LOAD DATASET =================
 
-data = pd.read_csv("dataset/dataset.csv")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+data = pd.read_csv(os.path.join(BASE_DIR, "dataset/dataset.csv"))
 
 # clean column names
 data.columns = data.columns.str.strip()
@@ -178,4 +184,4 @@ def predict_crop():
 # ================= RUN =================
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
